@@ -1,0 +1,24 @@
+{
+	"name": "mzk/nette-datagrid",
+	"type": "library",
+	"description": "VisualPaginator for Nette Framework",
+	"keywords": ["nette", "VisualPaginator"],
+	"authors": [
+		{
+			"name": "romansklenar/nette-datagrid",
+		},
+		{
+			"name": "Oldrich Salek",
+			"email": "mzk@mozektevidi.net"
+		}
+	],
+	"require": {
+		"php": ">=5.3.0",
+		"nette/nette": "@dev"
+	},
+	"autoload": {
+		"classmap": {
+			"mzk": ""
+		}
+	}
+}

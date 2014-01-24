@@ -11,8 +11,8 @@
  * @link       http://addons.nette.org/datagrid
  */
 
-namespace DataGrid;
-use Nette;
+namespace mzk;
+use \Nette;
 
 
 /**
