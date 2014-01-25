@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Columns;
+namespace mzk\DataGrid\Columns;
 
 /**
  * Representation of image data grid column.

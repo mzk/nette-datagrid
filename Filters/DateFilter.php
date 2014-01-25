@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Filters;
+namespace mzk\DataGrid\Filters;
 
 /**
  * Representation of data grid column date filter.
@@ -20,7 +20,8 @@ class DateFilter extends TextFilter
 	public function getFormControl()
 	{
 		parent::getFormControl();
-		$this->element->getControlPrototype()->addClass('datepicker');
+		$this->element->getControlPrototype()
+			->addClass('datepicker');
 		return $this->element;
 	}
 }

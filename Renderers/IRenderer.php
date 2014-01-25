@@ -1,6 +1,8 @@
 <?php
 
-namespace DataGrid\Renderers;
+namespace mzk\DataGrid\Renderers;
+
+use mzk\DataGrid;
 
 /**
  * Defines method that must implement data grid rendered.
@@ -14,9 +16,9 @@ interface IRenderer
 {
 	/**
 	 * Provides complete data grid rendering.
-	 * @param  DataGrid\Datagrid
+	 * @param  DataGrid
 	 * @return string
 	 */
-	function render(\DataGrid\DataGrid $dataGrid);
+	function render(DataGrid\DataGrid $dataGrid);
 
 }

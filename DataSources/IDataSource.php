@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\DataSources;
+namespace mzk\DataGrid\DataSources;
 
 /**
  * An interface which provides main data logic for DataGrid
@@ -16,7 +16,7 @@ interface IDataSource extends \Countable, \IteratorAggregate
 
 
 	/**#@+ filter operations */
-	const EQUAL	= '=';
+	const EQUAL = '=';
 	const NOT_EQUAL = '!=';
 	const GREATER = '>';
 	const GREATER_OR_EQUAL = '>=';
@@ -31,7 +31,8 @@ interface IDataSource extends \Countable, \IteratorAggregate
 
 	/**#@+ filter chain types */
 	const CHAIN_AND = 'AND';
-	const CHAIN_OR	= 'OR';
+	const CHAIN_OR = 'OR';
+
 	/**#@-*/
 
 

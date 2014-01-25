@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid;
+namespace mzk\DataGrid;
 
 /**
  * Defines method that must be implemented to allow a component act like a data grid action.
@@ -14,7 +14,7 @@ interface IAction
 {
 	/**
 	 * Gets action element template.
-	 * @return Nette\Web\Html
+	 * @return \Nette\Utils\Html
 	 */
 	function getHtml();
 

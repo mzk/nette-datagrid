@@ -1,7 +1,8 @@
 <?php
 
-namespace DataGrid\Filters;
-use Nette, DataGrid;
+namespace mzk\DataGrid\Filters;
+
+use Nette, mzk\DataGrid;
 
 /**
  * Representation of data grid column checkbox filter.
@@ -20,8 +21,8 @@ class CheckboxFilter extends ColumnFilter
 	 */
 	public function getFormControl()
 	{
-		if ($this->element instanceof Nette\Forms\FormControl) return $this->element;
-		$element = new Nette\Forms\Checkbox($this->getName());
+		if ($this->element instanceof Nette\Forms\IControl) return $this->element;
+		$element = new Nette\Forms\Controls\Checkbox($this->getName());
 
 		return $this->element = $element;
 	}

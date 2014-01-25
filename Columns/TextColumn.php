@@ -1,7 +1,6 @@
 <?php
 
-namespace DataGrid\Columns;
-use Nette;
+namespace mzk\DataGrid\Columns;
 
 /**
  * Representation of textual data grid column.
@@ -37,17 +36,17 @@ class TextColumn extends Column
 		}
 
 		// translate & truncate
-		if ($value instanceof Nette\Web\Html) {
+		if ($value instanceof \Nette\Utils\Html) {
 			$text = $this->dataGrid->translate($value->getText());
 			if ($this->maxLength != 0) {
-				$text = Nette\String::truncate($text, $this->maxLength);
+				$text = \Nette\Utils\Strings::truncate($text, $this->maxLength);
 			}
 			$value->setText($text);
 			$value->title = $this->dataGrid->translate($value->title);
 
 		} else {
 			if ($this->maxLength != 0) {
-				$value = Nette\String::truncate($value, $this->maxLength);
+				$value = \Nette\Utils\Strings::truncate($value, $this->maxLength);
 			}
 		}
 
@@ -64,7 +63,8 @@ class TextColumn extends Column
 	{
 		if (!$this->hasFilter()) return;
 
-		$dataSource = $this->getDataGrid()->getDataSource();
+		$dataSource = $this->getDataGrid()
+			->getDataSource();
 
 		if (strpos($value, '*') !== FALSE) {
 			$dataSource->filter($this->name, 'LIKE', $value); //asterisks are converted internally

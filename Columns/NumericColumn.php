@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Columns;
+namespace mzk\DataGrid\Columns;
 
 /**
  * Representation of numeric data grid column.
@@ -55,7 +55,7 @@ class NumericColumn extends Column
 
 	/**
 	 * Filter data source
-	 * 
+	 *
 	 * @param  mixed
 	 * @return void
 	 */
@@ -66,8 +66,9 @@ class NumericColumn extends Column
 		$dataGrid = $this->getDataGrid();
 
 		if ($value === 'NULL' || $value === 'NOT NULL') {
-			
-			$dataGrid->getDataSource()->filter($this->name, "IS $value");
+
+			$dataGrid->getDataSource()
+				->filter($this->name, "IS $value");
 
 		} else {
 			$operator = '=';
@@ -80,7 +81,8 @@ class NumericColumn extends Column
 				$value = $matches['value'];
 			}
 
-			$dataGrid->getDataSource()->filter($this->name, $operator, (float) $value); //or skip converting?
+			$dataGrid->getDataSource()
+				->filter($this->name, $operator, (float)$value); //or skip converting?
 		}
 	}
 }

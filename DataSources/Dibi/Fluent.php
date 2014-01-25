@@ -1,10 +1,8 @@
 <?php
 
-namespace DataGrid\DataSources\Dibi;
+namespace mzk\DataGrid\DataSources\Dibi;
+use mzk\DataGrid\DataSources\Mapped;
 
-use DataGrid\DataSources\IDataSource,
-	DataGrid\DataSources,
-	dibi;
 
 /**
  * Dibi fluent based data source
@@ -13,7 +11,7 @@ use DataGrid\DataSources\IDataSource,
  * @author Štěpán Svoboda
  * @author Petr Morávek
  */
-class Fluent extends DataSources\Mapped
+class Fluent extends Mapped
 {
 	/**
 	 * @var \DibiFluent Dibi fluent instance
@@ -66,8 +64,7 @@ class Fluent extends DataSources\Mapped
 					$conds[] = array('%n', $this->mapping[$column], $t);
 				} else {
 					$modifier = is_double($value) ? dibi::FLOAT : dibi::TEXT;
-					if ($operation === self::LIKE || $operation === self::NOT_LIKE)
-						$value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
+					if ($operation === self::LIKE || $operation === self::NOT_LIKE) $value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
 
 					$conds[] = array('%n', $this->mapping[$column], $t, '%' . $modifier, $value);
 				}
@@ -87,8 +84,7 @@ class Fluent extends DataSources\Mapped
 				$this->qb->where('%n', $this->mapping[$column], $operation);
 			} else {
 				$modifier = is_double($value) ? dibi::FLOAT : dibi::TEXT;
-				if ($operation === self::LIKE || $operation === self::NOT_LIKE)
-					$value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
+				if ($operation === self::LIKE || $operation === self::NOT_LIKE) $value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
 
 				$this->df->where('%n', $this->mapping[$column], $operation, '%' . $modifier, $value);
 			}
@@ -163,12 +159,12 @@ class Fluent extends DataSources\Mapped
 		$query = clone $this->df;
 
 		$query->removeClause('select')
-				->removeClause('limit')
-				->removeClause('offset')
-				->removeClause('order by')
-				->select('count(*)');
+			->removeClause('limit')
+			->removeClause('offset')
+			->removeClause('order by')
+			->select('count(*)');
 
-		return $this->count = (int) $query->fetchSingle();
+		return $this->count = (int)$query->fetchSingle();
 	}
 
 	/**

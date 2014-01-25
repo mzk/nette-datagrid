@@ -1,10 +1,10 @@
 <?php
 
-namespace DataGrid\Renderers;
-use Nette, DataGrid,
-	Nette\Web\Html,
-	DataGrid\Columns,
-	DataGrid\Action;
+namespace mzk\DataGrid\Renderers;
+
+use mzk\DataGrid\DataSources\IDataSource;
+use \Nette, mzk\DataGrid, mzk\DataGrid\Columns, mzk\DataGrid\Action;
+use \Nette\Utils\Html;
 
 /**
  * Converts a data grid into the HTML output.
@@ -18,76 +18,33 @@ use Nette, DataGrid,
 class Conventional extends Nette\Object implements IRenderer
 {
 	/** @var array  of HTML tags */
-	public $wrappers = array(
-		'datagrid' => array(
-			'container' => 'table class=datagrid',
-		),
-
-		'form' => array(
-			'.class' => 'datagrid',
-		),
-
-		'error' => array(
-			'container' => 'ul class=error',
-			'item' => 'li',
-		),
-
-		'row.header' => array(
-			'container' => 'tr class=header',
-			'cell' => array(
-				'container' => 'th', // .checker, .action
-				'.active' => 'active',
+	public $wrappers = array('datagrid' => array('container' => 'table class=datagrid',),
+		'form' => array('.class' => 'datagrid',),
+		'error' => array('container' => 'ul class=error',
+			'item' => 'li',),
+		'row.header' => array('container' => 'tr class=header',
+			'cell' => array('container' => 'th', // .checker, .action
+				'.active' => 'active',),),
+		'row.filter' => array('container' => 'tr class=filters',
+			'cell' => array('container' => 'td', // .action
 			),
-		),
-
-		'row.filter' => array(
-			'container' => 'tr class=filters',
-			'cell' => array(
-				'container' => 'td', // .action
-			),
-			'control' => array(
-				'.input' => 'text',
+			'control' => array('.input' => 'text',
 				'.select' => 'select',
-				'.submit' => 'button',
-			),
-		),
-
-		'row.content' => array(
-			'container' => 'tr', // .even, .selected
+				'.submit' => 'button',),),
+		'row.content' => array('container' => 'tr', // .even, .selected
 			'.even' => 'even',
-			'cell' => array(
-				'container' => 'td', // .checker, .action
-			),
-		),
-
-		'row.footer' => array(
-			'container' => 'tr class=footer',
-			'cell' => array(
-				'container' => 'td',
-			),
-		),
-
-		'paginator' => array(
-			'container' => 'span class=paginator',
-			'button' => array(
-				'first' => 'span class="paginator-first"',
+			'cell' => array('container' => 'td', // .checker, .action
+			),),
+		'row.footer' => array('container' => 'tr class=footer',
+			'cell' => array('container' => 'td',),),
+		'paginator' => array('container' => 'span class=paginator',
+			'button' => array('first' => 'span class="paginator-first"',
 				'prev' => 'span class="paginator-prev"',
 				'next' => 'span class="paginator-next"',
-				'last' => 'span class="paginator-last"',
-			),
-			'controls' => array(
-				'container' => 'span class=paginator-controls',
-			),
-		),
-
-		'operations' => array(
-			'container' => 'span class=operations',
-		),
-
-		'info' => array(
-			'container' => 'span class=grid-info',
-		),
-	);
+				'last' => 'span class="paginator-last"',),
+			'controls' => array('container' => 'span class=paginator-controls',),),
+		'operations' => array('container' => 'span class=operations',),
+		'info' => array('container' => 'span class=grid-info',),);
 
 	/** @var string */
 	public $footerFormat = '%operations% %paginator% %info%';
@@ -98,10 +55,10 @@ class Conventional extends Nette\Object implements IRenderer
 	/** @var string */
 	public $infoFormat = 'Items %from% - %to% of %count% | Display: %selectbox% | %reset%';
 
-	/** @var string  template file*/
+	/** @var string  template file */
 	public $file;
 
-	/** @var DataGrid\DataGrid */
+	/** @var DataGrid */
 	protected $dataGrid;
 
 	/** @var array  of function(Nette\Web\Html $row, DibiRow $data) */
@@ -112,7 +69,6 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/** @var array  of function(Nette\Web\Html $action, DibiRow $data) */
 	public $onActionRender;
-
 
 
 	/**
@@ -127,8 +83,9 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * Provides complete datagrid rendering.
-	 * @param  DataGrid\DataGrid
+	 * @param \mzk\DataGrid $dataGrid
 	 * @param  string
+	 * @throws \Nette\InvalidStateException
 	 * @return string
 	 */
 	public function render(DataGrid\DataGrid $dataGrid, $mode = NULL)
@@ -137,10 +94,9 @@ class Conventional extends Nette\Object implements IRenderer
 			$this->dataGrid = $dataGrid;
 		}
 
-		if (! $dataGrid->dataSource instanceof DataGrid\DataSources\IDataSource) {
-			throw new \InvalidStateException('Data source is not instance of IDataSource. ' . gettype($this->dataSource) . ' given.');
+		if (!$dataGrid->dataSource instanceof IDataSource) {
+			throw new Nette\InvalidStateException('Data source is not instance of IDataSource. ' . gettype($this->dataSource) . ' given.');
 		}
-
 		if ($mode !== NULL) {
 			return call_user_func_array(array($this, 'render' . $mode), array());
 		}
@@ -161,8 +117,10 @@ class Conventional extends Nette\Object implements IRenderer
 		foreach ($form->getControls() as $control) {
 			$control->setOption('rendered', FALSE);
 		}
-		$form->getElementPrototype()->addClass($this->getValue('form .class'));
-		return $form->getElementPrototype()->startTag();
+		$form->getElementPrototype()
+			->addClass($this->getValue('form .class'));
+		return $form->getElementPrototype()
+			->startTag();
 	}
 
 
@@ -173,7 +131,8 @@ class Conventional extends Nette\Object implements IRenderer
 	public function renderEnd()
 	{
 		$form = $this->dataGrid->getForm(TRUE);
-		return $form->getElementPrototype()->endTag() . "\n";
+		return $form->getElementPrototype()
+			->endTag() . "\n";
 	}
 
 
@@ -228,7 +187,7 @@ class Conventional extends Nette\Object implements IRenderer
 		$body = Html::el($container->getName() == 'table' ? 'tbody' : NULL);
 
 		if ($this->dataGrid->paginator->itemCount) {
-			$iterator = new Nette\SmartCachingIterator($this->dataGrid->getRows());
+			$iterator = new Nette\Iterators\CachingIterator($this->dataGrid->getRows());
 			foreach ($iterator as $data) {
 				$row = $this->generateContentRow($data);
 				$row->addClass($iterator->isEven() ? $this->getValue('row.content .even') : NULL);
@@ -240,7 +199,8 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell = $this->getWrapper('row.content cell container');
 			$cell->colspan = $size;
 			$cell->style = 'text-align:center';
-			$cell->add(Html::el('div')->setText($this->dataGrid->translate('No data were found')));
+			$cell->add(Html::el('div')
+				->setText($this->dataGrid->translate('No data were found')));
 			$row->add($cell);
 			$body->add($row);
 		}
@@ -280,8 +240,7 @@ class Conventional extends Nette\Object implements IRenderer
 		$title = $this->dataGrid->translate('First');
 		$link = clone $a->href($this->dataGrid->link('page', 1));
 		if ($first instanceof Html) {
-			if ($paginator->isFirst()) $first->addClass('inactive');
-			else $first = $link->add($first);
+			if ($paginator->isFirst()) $first->addClass('inactive'); else $first = $link->add($first);
 			$first->title($title);
 		} else {
 			$first = $link->setText($title);
@@ -293,8 +252,7 @@ class Conventional extends Nette\Object implements IRenderer
 		$title = $this->dataGrid->translate('Previous');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->page - 1));
 		if ($prev instanceof Html) {
-			if ($paginator->isFirst()) $prev->addClass('inactive');
-			else $prev = $link->add($prev);
+			if ($paginator->isFirst()) $prev->addClass('inactive'); else $prev = $link->add($prev);
 			$prev->title($title);
 		} else {
 			$prev = $link->setText($title);
@@ -305,12 +263,13 @@ class Conventional extends Nette\Object implements IRenderer
 		$controls = $this->getWrapper('paginator controls container');
 		$form = $this->dataGrid->getForm(TRUE);
 		$format = $this->dataGrid->translate($this->paginatorFormat);
-		$html = str_replace(
-			array('%label%', '%input%', '%count%'),
-			array($form['page']->label, $form['page']->control, $paginator->pageCount),
-			$format
-		);
-		$controls->add(Html::el()->setHtml($html));
+		$html = str_replace(array('%label%',
+			'%input%',
+			'%count%'), array($form['page']->label,
+			$form['page']->control,
+			$paginator->pageCount), $format);
+		$controls->add(Html::el()
+			->setHtml($html));
 		$container->add($controls);
 
 		// next button
@@ -318,8 +277,7 @@ class Conventional extends Nette\Object implements IRenderer
 		$title = $this->dataGrid->translate('Next');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->page + 1));
 		if ($next instanceof Html) {
-			if ($paginator->isLast()) $next->addClass('inactive');
-			else $next = $link->add($next);
+			if ($paginator->isLast()) $next->addClass('inactive'); else $next = $link->add($next);
 			$next->title($title);
 		} else {
 			$next = $link->setText($title);
@@ -331,8 +289,7 @@ class Conventional extends Nette\Object implements IRenderer
 		$title = $this->dataGrid->translate('Last');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->pageCount));
 		if ($last instanceof Html) {
-			if ($paginator->isLast()) $last->addClass('inactive');
-			else $last = $link->add($last);
+			if ($paginator->isLast()) $last->addClass('inactive'); else $last = $link->add($last);
 			$last->title($title);
 		} else {
 			$last = $link->setText($title);
@@ -381,23 +338,15 @@ class Conventional extends Nette\Object implements IRenderer
 		$stateSubmit->title($stateSubmit->value);
 
 		$this->infoFormat = $this->dataGrid->translate($this->infoFormat);
-		$html = str_replace(
-			array(
-				'%from%',
-				'%to%',
-				'%count%',
-				'%selectbox%',
-				'%reset%'
-			),
-			array(
-				$paginator->itemCount != 0 ? $paginator->offset + 1 : $paginator->offset,
-				$paginator->offset + $paginator->length,
-				$paginator->itemCount,
-				$form['items']->control . $form['itemsSubmit']->control->title($form['itemsSubmit']->control->value),
-				($this->dataGrid->rememberState ? $stateSubmit : ''),
-			),
-			$this->infoFormat
-		);
+		$html = str_replace(array('%from%',
+			'%to%',
+			'%count%',
+			'%selectbox%',
+			'%reset%'), array($paginator->itemCount != 0 ? $paginator->offset + 1 : $paginator->offset,
+			$paginator->offset + $paginator->length,
+			$paginator->itemCount,
+			$form['items']->control . $form['itemsSubmit']->control->title($form['itemsSubmit']->control->value),
+			($this->dataGrid->rememberState ? $stateSubmit : ''),), $this->infoFormat);
 
 		$container->setHtml(trim($html, ' | '));
 		return $container->render();
@@ -406,7 +355,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * Generates datagrid headrer.
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	protected function generateHeaderRow()
 	{
@@ -442,24 +391,37 @@ class Conventional extends Nette\Object implements IRenderer
 				}
 
 				if (count($list) > 1 && isset($list[$column->getName()])) {
-					$text .= Html::el('span')->setHtml($list[$column->getName()][1]);
+					$text .= Html::el('span')
+						->setHtml($list[$column->getName()][1]);
 				}
 
-				$up = clone $down = Html::el('a')->addClass(Columns\Column::$ajaxClass);
-				$up->addClass($a ? 'active' : '')->href($column->getOrderLink('a'))
-					->add(Html::el('span')->class('up'));
-				$down->addClass($d ? 'active' : '')->href($column->getOrderLink('d'))
-					->add(Html::el('span')->class('down'));
-				$positioner = Html::el('span')->class('positioner')->add($up)->add($down);
+				$up = clone $down = Html::el('a')
+					->addClass(Columns\Column::$ajaxClass);
+				$up->addClass($a ? 'active' : '')
+					->href($column->getOrderLink('a'))
+					->add(Html::el('span')
+						->class('up'));
+				$down->addClass($d ? 'active' : '')
+					->href($column->getOrderLink('d'))
+					->add(Html::el('span')
+						->class('down'));
+				$positioner = Html::el('span')
+					->class('positioner')
+					->add($up)
+					->add($down);
 				$active = $a || $d;
 
-				$value = (string) Html::el('a')->href($column->getOrderLink())
-					->addClass(Columns\Column::$ajaxClass)->setHtml($text) . $positioner;
+				$value = (string)Html::el('a')
+						->href($column->getOrderLink())
+						->addClass(Columns\Column::$ajaxClass)
+						->setHtml($text) . $positioner;
 			} else {
-				$value = (string) Html::el('p')->setText($value);
+				$value = (string)Html::el('p')
+					->setText($value);
 			}
 
-			$cell = $this->getWrapper('row.header cell container')->setHtml($value);
+			$cell = $this->getWrapper('row.header cell container')
+				->setHtml($value);
 			$cell->attrs = $column->getHeaderPrototype()->attrs;
 			$cell->addClass(isset($active) && $active == TRUE ? $this->getValue('row.header cell .active') : NULL);
 			if ($column instanceof Columns\ActionColumn) $cell->addClass('actions');
@@ -473,7 +435,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * Generates datagrid filter.
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	protected function generateFilterRow()
 	{
@@ -491,20 +453,20 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell->attrs = $column->getCellPrototype()->attrs;
 
 			if ($column instanceof Columns\ActionColumn) {
-				$value = (string) $submitControl;
+				$value = (string)$submitControl;
 				$cell->addClass('actions');
 
 			} else {
 				if ($column->hasFilter()) {
 					$filter = $column->getFilter();
-					if ($filter instanceof Filters\SelectboxFilter) {
+					if ($filter instanceof DataGrid\Filters\SelectboxFilter) {
 						$class = $this->getValue('row.filter control .select');
 					} else {
 						$class = $this->getValue('row.filter control .input');
 					}
 					$control = $filter->getFormControl()->control;
 					$control->addClass($class);
-					$value = (string) $control;
+					$value = (string)$control;
 				} else {
 					$value = '';
 				}
@@ -526,7 +488,8 @@ class Conventional extends Nette\Object implements IRenderer
 	/**
 	 * Generates datagrid row content.
 	 * @param  \Traversable|array data
-	 * @return Nette\Web\Html
+	 * @throws \InvalidArgumentException
+	 * @return Html
 	 */
 	protected function generateContentRow($data)
 	{
@@ -543,11 +506,14 @@ class Conventional extends Nette\Object implements IRenderer
 		// checker
 		if ($this->dataGrid->hasOperations()) {
 			$value = $form['checker'][$data[$primary]]->getControl();
-			$cell = $this->getWrapper('row.content cell container')->setHtml((string)$value);
+			$cell = $this->getWrapper('row.content cell container')
+				->setHtml((string)$value);
 			$cell->addClass('checker');
 			$row->add($cell);
 		}
-
+//		dump($data);
+//		dump($this->dataGrid->getColumns());
+//		dump($this->dataGrid);
 		// content
 		foreach ($this->dataGrid->getColumns() as $column) {
 			$cell = $this->getWrapper('row.content cell container');
@@ -563,7 +529,9 @@ class Conventional extends Nette\Object implements IRenderer
 						$this->onActionRender($html, $data);
 						$value .= $html->render() . ' ';
 					} else
-						$value .= Html::el('span')->setText($this->dataGrid->translate($action->getHtml()->title))->render() . ' ';
+						$value .= Html::el('span')
+								->setText($this->dataGrid->translate($action->getHtml()->title))
+								->render() . ' ';
 				}
 				$cell->addClass('actions');
 
@@ -586,7 +554,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * Generates datagrid footer.
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	protected function generateFooterRow()
 	{
@@ -601,19 +569,11 @@ class Conventional extends Nette\Object implements IRenderer
 		$cell->colspan($count);
 
 		$this->footerFormat = $this->dataGrid->translate($this->footerFormat);
-		$html = str_replace(
-			array(
-				'%operations%',
-				'%paginator%',
-				'%info%',
-			),
-			array(
-				$this->renderOperations(),
-				$this->renderPaginator(),
-				$this->renderInfo(),
-			),
-			$this->footerFormat
-		);
+		$html = str_replace(array('%operations%',
+			'%paginator%',
+			'%info%',), array($this->renderOperations(),
+			$this->renderPaginator(),
+			$this->renderInfo(),), $this->footerFormat);
 		$cell->setHtml($html);
 		$row->add($cell);
 
@@ -623,7 +583,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * @param  string
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	protected function getWrapper($name)
 	{
@@ -649,8 +609,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 
 	/**
-	 * Returns DataGrid.
-	 * @return DataGrid\DataGrid
+	 * @return DataGrid
 	 */
 	public function getDataGrid()
 	{

@@ -1,9 +1,7 @@
 <?php
-namespace DataGrid\DataSources\Dibi;
+namespace mzk\DataGrid\DataSources\Dibi;
 
-use DataGrid\DataSources\IDataSource,
-	DataGrid\DataSources,
-	dibi;
+use mzk\DataGrid\DataSources\IDataSource, mzk\DataGrid\DataSources, dibi;
 
 /**
  * Dibi data source based data source
@@ -40,7 +38,8 @@ class DataSource extends DataSources\DataSource
 	 */
 	public function getColumns()
 	{
-		throw new \NotSupportedException;
+		return $this->ds->getColumns();
+		//throw new NotSupportedException;
 	}
 
 	/**
@@ -84,8 +83,7 @@ class DataSource extends DataSources\DataSource
 					$conds[] = array('%n', $column, $t);
 				} else {
 					$modifier = is_double($value) ? dibi::FLOAT : dibi::TEXT;
-					if ($operation === self::LIKE || $operation === self::NOT_LIKE)
-						$value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
+					if ($operation === self::LIKE || $operation === self::NOT_LIKE) $value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
 
 					$conds[] = array('%n', $column, $t, '%' . $modifier, $value);
 				}
@@ -105,8 +103,7 @@ class DataSource extends DataSources\DataSource
 				$this->ds->where('%n', $column, $operation);
 			} else {
 				$modifier = is_double($value) ? dibi::FLOAT : dibi::TEXT;
-				if ($operation === self::LIKE || $operation === self::NOT_LIKE)
-					$value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
+				if ($operation === self::LIKE || $operation === self::NOT_LIKE) $value = DataSources\Utils\WildcardHelper::formatLikeStatementWildcards($value);
 
 				$this->ds->where('%n', $column, $operation, '%' . $modifier, $value);
 			}
@@ -140,8 +137,7 @@ class DataSource extends DataSources\DataSource
 			throw new \OutOfRangeException;
 		}
 
-		if ($start != NULL && ($start < 0 || $start > count($this)))
-			throw new \OutOfRangeException;
+		if ($start != NULL && ($start < 0 || $start > count($this))) throw new \OutOfRangeException;
 
 		$this->ds->applyLimit($count == NULL ? NULL : $count, $start == NULL ? NULL : $start);
 		return $this;
@@ -171,7 +167,7 @@ class DataSource extends DataSources\DataSource
 	 */
 	public function count()
 	{
-		return (int) $this->ds->count();
+		return (int)$this->ds->count();
 	}
 
 	/**

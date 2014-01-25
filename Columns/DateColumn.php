@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Columns;
+namespace mzk\DataGrid\Columns;
 
 /**
  * Representation of date data grid column.
@@ -41,7 +41,7 @@ class DateColumn extends TextColumn
 		if ((int)$value == NULL || empty($value)) return 'N/A';
 		$value = parent::formatContent($value, $data);
 
-		$value = is_numeric($value) ? (int) $value : ($value instanceof \DateTime ? $value->format('U') : strtotime($value));
+		$value = is_numeric($value) ? (int)$value : ($value instanceof \DateTime ? $value->format('U') : strtotime($value));
 		return strftime($this->format, $value);
 	}
 
@@ -53,8 +53,10 @@ class DateColumn extends TextColumn
 	 */
 	public function applyFilter($value)
 	{
-		if (! $this->hasFilter()) return;
+		if (!$this->hasFilter()) return;
 
-		$this->getDataGrid()->getDataSource()->filter($this->name, '=', $value);
+		$this->getDataGrid()
+			->getDataSource()
+			->filter($this->name, '=', $value);
 	}
 }

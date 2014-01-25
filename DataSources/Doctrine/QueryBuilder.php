@@ -1,11 +1,8 @@
 <?php
 
-namespace DataGrid\DataSources\Doctrine;
+namespace mzk\DataGrid\DataSources\Doctrine;
 
-use Doctrine,
-	Doctrine\ORM\Query\Expr,
-	DataGrid\DataSources,
-	DataGrid\DataSources\Utils\WildcardHelper;
+use Doctrine, Doctrine\ORM\Query\Expr, mzk\DataGrid\DataSources, mzk\DataGrid\DataSources\Utils\WildcardHelper;
 
 /**
  * Query Builder based data source
@@ -27,8 +24,8 @@ class QueryBuilder extends DataSources\Mapped
 	 * The mapping type
 	 * This is automaticaly detected from the SELECT statement.
 	 * Supported are:
-	 *		1. Mapping properties via "SELECT a.id FROM Entities\Article a"
-	 *		2. Mapping objects via "SELECT a FROM Entities\Article a"
+	 *        1. Mapping properties via "SELECT a.id FROM Entities\Article a"
+	 *        2. Mapping objects via "SELECT a FROM Entities\Article a"
 	 * @var integer
 	 */
 	private $mappingType;
@@ -55,7 +52,7 @@ class QueryBuilder extends DataSources\Mapped
 
 	public function __clone()
 	{
-		$this->qb=clone $this->qb;
+		$this->qb = clone $this->qb;
 	}
 
 	/**
@@ -85,10 +82,7 @@ class QueryBuilder extends DataSources\Mapped
 					$conds[] = "{$this->mapping[$column]} $t";
 				} else {
 					$conds[] = "{$this->mapping[$column]} $t ?$nextParamId";
-					$this->qb->setParameter(
-						$nextParamId++,
-						$t === self::LIKE || $t === self::NOT_LIKE ? WildcardHelper::formatLikeStatementWildcards($value) : $value
-					);
+					$this->qb->setParameter($nextParamId++, $t === self::LIKE || $t === self::NOT_LIKE ? WildcardHelper::formatLikeStatementWildcards($value) : $value);
 				}
 			}
 
@@ -106,10 +100,7 @@ class QueryBuilder extends DataSources\Mapped
 				$this->qb->andWhere("{$this->mapping[$column]} $operation");
 			} else {
 				$this->qb->andWhere("{$this->mapping[$column]} $operation ?$nextParamId");
-				$this->qb->setParameter(
-					$nextParamId,
-					$operation === self::LIKE || $operation === self::NOT_LIKE ? WildcardHelper::formatLikeStatementWildcards($value) : $value
-				);
+				$this->qb->setParameter($nextParamId, $operation === self::LIKE || $operation === self::NOT_LIKE ? WildcardHelper::formatLikeStatementWildcards($value) : $value);
 			}
 		}
 
@@ -127,7 +118,7 @@ class QueryBuilder extends DataSources\Mapped
 		if (!$this->hasColumn($column)) {
 			throw new \InvalidArgumentException('Trying to sort data source by unknown column.');
 		}
-		
+
 		$this->qb->addOrderBy($this->mapping[$column], $order === self::ASCENDING ? 'ASC' : 'DESC');
 
 		return $this;
@@ -167,10 +158,11 @@ class QueryBuilder extends DataSources\Mapped
 	 */
 	public function fetch()
 	{
-		$this->data = $this->qb->getQuery()->getScalarResult();
+		$this->data = $this->qb->getQuery()
+			->getScalarResult();
 
 		// Detect mapping type. It will affect the hydrated column names.
-		$this->detectMappingType(); 
+		$this->detectMappingType();
 
 		// Create mapping index
 		$data = array();
@@ -196,7 +188,7 @@ class QueryBuilder extends DataSources\Mapped
 		if ($this->mappingType === self::MAP_PROPERTIES) {
 			return substr($column, strpos($column, '.') !== FALSE ? strpos($column, '.') + 1 : 0);
 		}
-		
+
 		if ($this->mappingType === self::MAP_OBJECTS) {
 			return strtr($column, '.', '_');
 		}
@@ -209,7 +201,8 @@ class QueryBuilder extends DataSources\Mapped
 	 */
 	protected function detectMappingType()
 	{
-		$expressions = $this->qb->getQuery()->getAST()->selectClause->selectExpressions;
+		$expressions = $this->qb->getQuery()
+			->getAST()->selectClause->selectExpressions;
 		$this->mappingType = self::MAP_PROPERTIES;
 		foreach ($expressions as $expr) {
 			if (is_string($expr->expression)) {
@@ -227,16 +220,17 @@ class QueryBuilder extends DataSources\Mapped
 	{
 		//\Nette\Debug::barDump(debug_backtrace());
 		$query = clone $this->qb->getQuery();
-		$query->setParameters($this->qb->getQuery()->getParameters());
+		$query->setParameters($this->qb->getQuery()
+			->getParameters());
 
 		$query->setHint(Doctrine\ORM\Query::HINT_CUSTOM_TREE_WALKERS, array(__NAMESPACE__ . '\Utils\CountingASTWalker'));
-		$query->setMaxResults(NULL)->setFirstResult(NULL);
+		$query->setMaxResults(NULL)
+			->setFirstResult(NULL);
 
 		$parts = $this->qb->getDQLParts();
-		if (array_key_exists('groupBy', $parts) && count($parts['groupBy']) > 0)
-			return count($query->getScalarResult());
+		if (array_key_exists('groupBy', $parts) && count($parts['groupBy']) > 0) return count($query->getScalarResult());
 
-		return (int) $query->getSingleScalarResult();
+		return (int)$query->getSingleScalarResult();
 	}
 
 	public function getFilterItems($column)

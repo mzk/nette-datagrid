@@ -1,6 +1,7 @@
 <?php
 
-namespace DataGrid\Filters;
+namespace mzk\DataGrid\Filters;
+
 use Nette;
 
 /**
@@ -52,8 +53,9 @@ class SelectboxFilter extends ColumnFilter
 		// NOTE: don't generate if was items given in constructor
 		if (is_array($this->items)) return;
 
-		$dataGrid = $this->lookup('DataGrid\DataGrid');
-		$items = $dataGrid->getDataSource()->getFilterItems($this->getName());
+		$dataGrid = $this->lookup('mzk\DataGrid');
+		$items = $dataGrid->getDataSource()
+			->getFilterItems($this->getName());
 		$this->generatedItems = $this->firstEmpty ? array_merge(array('' => '?'), $items) : $items;
 
 		// if was data grid already filtered by this filter don't update with filtred items (keep full list)
@@ -67,12 +69,12 @@ class SelectboxFilter extends ColumnFilter
 
 	/**
 	 * Returns filter's form element.
-	 * @return Nette\Forms\FormControl
+	 * @return Nette\Forms\IControl
 	 */
 	public function getFormControl()
 	{
-		if ($this->element instanceof Nette\Forms\FormControl) return $this->element;
-		$this->element = new Nette\Forms\SelectBox($this->getName(), $this->items);
+		if ($this->element instanceof Nette\Forms\IControl) return $this->element;
+		$this->element = new Nette\Forms\Controls\SelectBox($this->getName(), $this->items);
 
 		// prepare items
 		if ($this->items === NULL) {
@@ -81,7 +83,7 @@ class SelectboxFilter extends ColumnFilter
 
 		// skip first item?
 		if ($this->firstEmpty) {
-			$this->element->skipFirst('?');
+			$this->element->setPrompt('?');
 		}
 
 		// translate items?
@@ -96,11 +98,11 @@ class SelectboxFilter extends ColumnFilter
 	/**
 	 * Translate all items in selectbox?
 	 * @param  bool
-	 * @return DataGrid\Filters\SelectboxFilter  provides a fluent interface
+	 * @return SelectboxFilter  provides a fluent interface
 	 */
 	public function translateItems($translate)
 	{
-		$this->translateItems = (bool) $translate;
+		$this->translateItems = (bool)$translate;
 		return $this;
 	}
 }

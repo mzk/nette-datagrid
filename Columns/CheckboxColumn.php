@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Columns;
+namespace mzk\DataGrid\Columns;
 
 use Nette;
 
@@ -24,7 +24,8 @@ class CheckboxColumn extends NumericColumn
 	public function __construct($caption = NULL)
 	{
 		parent::__construct($caption, 0);
-		$this->getCellPrototype()->style('text-align: center');
+		$this->getCellPrototype()
+			->style('text-align: center');
 	}
 
 	/**
@@ -35,24 +36,26 @@ class CheckboxColumn extends NumericColumn
 	 */
 	public function formatContent($value, $data = NULL)
 	{
-		$checkbox = Nette\Web\Html::el('input')->type('checkbox')->disabled('disabled');
-		if ($value)
-			$checkbox->checked = TRUE;
-		return (string) $checkbox;
+		$checkbox = Nette\Web\Html::el('input')
+			->type('checkbox')
+			->disabled('disabled');
+		if ($value) $checkbox->checked = TRUE;
+		return (string)$checkbox;
 	}
 
 	/**
 	 * Filter data source
-	 * 
+	 *
 	 * @param  mixed
 	 * @return void
 	 */
 	public function applyFilter($value)
 	{
-		if (! $this->hasFilter()) return;
+		if (!$this->hasFilter()) return;
 
-		$dataSource = $this->getDataGrid()->getDataSource();
-		$value = (boolean) $value;
+		$dataSource = $this->getDataGrid()
+			->getDataSource();
+		$value = (boolean)$value;
 		if ($value) {
 			$dataSource->filter($this->name, '>=', $value);
 		} else {

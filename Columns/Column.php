@@ -1,7 +1,12 @@
 <?php
 
-namespace DataGrid\Columns;
-use Nette, Nette\Web\Html, Datagrid, DataGrid\Filters;
+namespace mzk\DataGrid\Columns;
+
+use mzk\DataGrid\Filters\IColumnFilter;
+use mzk\DataGrid\Filters\SelectboxFilter;
+use mzk\DataGrid;
+use Nette\ComponentModel\Container;
+use Nette\Utils\Html;
 
 /**
  * Base class that implements the basic common functionality to data grid columns.
@@ -12,12 +17,12 @@ use Nette, Nette\Web\Html, Datagrid, DataGrid\Filters;
  * @example    http://addons.nette.org/datagrid
  * @package    Nette\Extras\DataGrid
  */
-abstract class Column extends Nette\ComponentContainer implements IColumn
+abstract class Column extends Container implements IColumn
 {
-	/** @var Nette\Web\Html  table header element template */
+	/** @var Html  table header element template */
 	protected $header;
 
-	/** @var Nette\Web\Html  table cell element template */
+	/** @var Html  table cell element template */
 	protected $cell;
 
 	/** @var string */
@@ -46,13 +51,13 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function __construct($caption = NULL, $maxLength = NULL)
 	{
-		parent::__construct();
-		$this->addComponent(new Nette\ComponentContainer, 'filters');
+		parent::__construct($caption = NULL, $maxLength = NULL);
+		$this->addComponent(new Container, 'filters');
 		$this->header = Html::el();
 		$this->cell = Html::el();
 		$this->caption = $caption;
 		if ($maxLength !== NULL) $this->maxLength = $maxLength;
-		$this->monitor('DataGrid\DataGrid');
+		$this->monitor('mzk\DataGrid\DataGrid');
 	}
 
 
@@ -77,22 +82,20 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	/**
 	 * Returns DataGrid.
 	 * @param  bool   throw exception if form doesn't exist?
-	 * @return DataGrid\DataGrid
+	 * @return DataGrid
 	 */
 	public function getDataGrid($need = TRUE)
 	{
-		return $this->lookup('DataGrid\DataGrid', $need);
+		return $this->lookup('mzk\DataGrid\Datagrid', $need);
 	}
-
 
 
 	/********************* Html objects getters *********************/
 
 
-
 	/**
 	 * Returns headers's HTML element template.
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	public function getHeaderPrototype()
 	{
@@ -102,7 +105,7 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 
 	/**
 	 * Returns table's cell HTML element template.
-	 * @return Nette\Web\Html
+	 * @return Html
 	 */
 	public function getCellPrototype()
 	{
@@ -117,16 +120,16 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	public function getCaption()
 	{
 		if ($this->caption instanceof Html && $this->caption->title) {
-			return $this->caption->title($this->getDataGrid()->translate($this->caption->title));
+			return $this->caption->title($this->getDataGrid()
+				->translate($this->caption->title));
 		} else {
-			return $this->getDataGrid()->translate($this->caption);
+			return $this->getDataGrid()
+				->translate($this->caption);
 		}
 	}
 
 
-
 	/********************* interface DataGrid\Columns\IColumn *********************/
-
 
 
 	/**
@@ -146,7 +149,8 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function getOrderLink($dir = NULL)
 	{
-		return $this->getDataGrid()->link('order', array('by' => $this->getName(), 'dir' => $dir));
+		return $this->getDataGrid()
+			->link('order', array('by' => $this->getName(), 'dir' => $dir));
 	}
 
 
@@ -156,7 +160,7 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function hasFilter()
 	{
-		return $this->getFilter(FALSE) instanceof DataGrid\Filters\IColumnFilter;
+		return $this->getFilter(FALSE) instanceof IColumnFilter;
 	}
 
 
@@ -167,7 +171,8 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function getFilter($need = TRUE)
 	{
-		return $this->getComponent('filters')->getComponent($this->getName(), $need);
+		return $this->getComponent('filters')
+			->getComponent($this->getName(), $need);
 	}
 
 
@@ -179,7 +184,7 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function formatContent($value, $data = NULL)
 	{
-		return (string) $value;
+		return (string)$value;
 	}
 
 
@@ -194,9 +199,7 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	}
 
 
-
 	/********************* Default sorting and filtering *********************/
-
 
 
 	/**
@@ -262,10 +265,7 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	}
 
 
-
-
 	/********************* filter factories *********************/
-
 
 
 	/**
@@ -325,8 +325,9 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 */
 	public function addSelectboxFilter($items = NULL, $firstEmpty = TRUE, $translateItems = TRUE)
 	{
-		$this->_addFilter(new Filters\SelectboxFilter($items, $firstEmpty));
-		return $this->getFilter()->translateItems($translateItems);
+		$this->_addFilter(new SelectboxFilter($items, $firstEmpty));
+		return $this->getFilter()
+			->translateItems($translateItems);
 	}
 
 
@@ -335,11 +336,13 @@ abstract class Column extends Nette\ComponentContainer implements IColumn
 	 * @param  DataGrid\Filters\IColumnFilter $filter
 	 * @return void
 	 */
-	private function _addFilter(DataGrid\Filters\IColumnFilter $filter)
+	private function _addFilter(IColumnFilter $filter)
 	{
 		if ($this->hasFilter()) {
-			$this->getComponent('filters')->removeComponent($this->getFilter());
+			$this->getComponent('filters')
+				->removeComponent($this->getFilter());
 		}
-		$this->getComponent('filters')->addComponent($filter, $this->getName());
+		$this->getComponent('filters')
+			->addComponent($filter, $this->getName());
 	}
 }

@@ -1,6 +1,7 @@
 <?php
 
-namespace DataGrid\DataSources\PHPArray;
+namespace mzk\DataGrid\DataSources\PHPArray;
+
 use Nette, DataGrid;
 
 /**
@@ -11,7 +12,7 @@ class PHPArray extends DataGrid\DataSources\DataSource
 {
 	/** @var array */
 	private $items;
-	
+
 	/** @var array */
 	private $source;
 

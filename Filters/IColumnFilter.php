@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\Filters;
+namespace mzk\DataGrid\Filters;
 
 /**
  * Defines method that must be implemented to allow a component act like a data grid column's filter.

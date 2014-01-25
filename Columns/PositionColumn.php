@@ -1,7 +1,8 @@
 <?php
 
-namespace DataGrid\Columns;
-use DataGrid, Nette\Web\Html, DataGrid\DataSources\IDataSource;
+namespace mzk\DataGrid\Columns;
+
+use Nette\Utils\Html, mzk\DataGrid\DataSources\IDataSource;
 
 /**
  * Representation of positioning data grid column, that provides moving entries up or down.
@@ -58,7 +59,7 @@ class PositionColumn extends NumericColumn
 			$this->destination = $destination;
 		}
 
-		$this->monitor('Datagrid\DataGrid');
+		$this->monitor('mzk\Datagrid');
 	}
 
 
@@ -70,15 +71,17 @@ class PositionColumn extends NumericColumn
 	 */
 	protected function attached($dataGrid)
 	{
-		if ($dataGrid instanceof DataGrid\DataGrid) {
+		if ($dataGrid instanceof \mzk\DataGrid) {
 			$dataSource = clone $dataGrid->dataSource;
 			$this->min = $this->max = 0;
-			$first = $dataSource->sort($this->getName(), IDataSource::ASCENDING)->reduce(1)->fetch();
-			if (count($first) > 0)
-				$this->min = (int) $first[0][$this->getName()];
-			$last = $dataSource->sort($this->getName(), IDataSource::DESCENDING)->reduce(1)->fetch();
-			if (count($last) > 0)
-				$this->max = (int) $first[0][$this->getName()];
+			$first = $dataSource->sort($this->getName(), IDataSource::ASCENDING)
+				->reduce(1)
+				->fetch();
+			if (count($first) > 0) $this->min = (int)$first[0][$this->getName()];
+			$last = $dataSource->sort($this->getName(), IDataSource::DESCENDING)
+				->reduce(1)
+				->fetch();
+			if (count($last) > 0) $this->max = (int)$first[0][$this->getName()];
 		}
 
 		parent::attached($dataGrid);
@@ -93,12 +96,21 @@ class PositionColumn extends NumericColumn
 	 */
 	public function formatContent($value, $data = NULL)
 	{
-		$control = $this->getDataGrid()->lookup('Nette\Application\Control', TRUE);
+		$control = $this->getDataGrid()
+			->lookup('Nette\Application\Control', TRUE);
 		$uplink = $control->link($this->destination, array('key' => $value, 'dir' => 'up'));
 		$downlink = $control->link($this->destination, array('key' => $value, 'dir' => 'down'));
 
-		$up = Html::el('a')->title($this->moves['up'])->href($uplink)->add(Html::el('span')->class('up'));
-		$down = Html::el('a')->title($this->moves['down'])->href($downlink)->add(Html::el('span')->class('down'));
+		$up = Html::el('a')
+			->title($this->moves['up'])
+			->href($uplink)
+			->add(Html::el('span')
+			->class('up'));
+		$down = Html::el('a')
+			->title($this->moves['down'])
+			->href($downlink)
+			->add(Html::el('span')
+			->class('down'));
 
 		if ($this->useAjax) {
 			$up->class(self::$ajaxClass);
@@ -115,7 +127,10 @@ class PositionColumn extends NumericColumn
 			$down->class('inactive');
 		}
 
-		$positioner = Html::el('span')->class('positioner')->add($up)->add($down);
+		$positioner = Html::el('span')
+			->class('positioner')
+			->add($up)
+			->add($down);
 		return $positioner . $value;
 	}
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace DataGrid\DataSources;
+namespace mzk\DataGrid\DataSources;
 
 /**
  * Base class for Doctrine2 based data sources

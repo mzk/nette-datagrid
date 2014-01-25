@@ -1,6 +1,7 @@
 <?php
 
-namespace DataGrid\Filters;
+namespace mzk\DataGrid\Filters;
+
 use Nette;
 
 /**
