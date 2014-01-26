@@ -435,7 +435,7 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 			$stop = -strlen('</div>');
 			$html = trim(mb_substr($html, $start, $stop));
 
-			// Send snippet 
+			// Send snippet
 			$presenter->payload->snippets[$snippet] = $html;
 			$presenter->sendPayload();
 			$presenter->terminate();
