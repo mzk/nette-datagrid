@@ -58,7 +58,7 @@ class Conventional extends Nette\Object implements IRenderer
 	/** @var string  template file */
 	public $file;
 
-	/** @var DataGrid */
+	/** @var DataGrid\DataGrid */
 	protected $dataGrid;
 
 	/** @var array  of function(Nette\Web\Html $row, DibiRow $data) */
@@ -73,17 +73,17 @@ class Conventional extends Nette\Object implements IRenderer
 
 	/**
 	 * Data grid renderer constructor.
-	 * @return void
+	 * @return \mzk\DataGrid\Renderers\Conventional
 	 */
 	public function __construct()
 	{
-		$this->file = __DIR__ . '/grid.phtml';
+		$this->file = __DIR__ . '/grid.latte';
 	}
 
 
 	/**
 	 * Provides complete datagrid rendering.
-	 * @param \mzk\DataGrid $dataGrid
+	 * @param \mzk\Datagrid\DataGrid $dataGrid
 	 * @param  string
 	 * @throws \Nette\InvalidStateException
 	 * @return string
@@ -94,7 +94,7 @@ class Conventional extends Nette\Object implements IRenderer
 			$this->dataGrid = $dataGrid;
 		}
 
-		if (!$dataGrid->dataSource instanceof IDataSource) {
+		if (!$dataGrid->getDataSource() instanceof IDataSource) {
 			throw new Nette\InvalidStateException('Data source is not instance of IDataSource. ' . gettype($this->dataSource) . ' given.');
 		}
 		if ($mode !== NULL) {
@@ -186,7 +186,7 @@ class Conventional extends Nette\Object implements IRenderer
 		// body
 		$body = Html::el($container->getName() == 'table' ? 'tbody' : NULL);
 
-		if ($this->dataGrid->paginator->itemCount) {
+		if ($this->dataGrid->getPaginator()->itemCount) {
 			$iterator = new Nette\Iterators\CachingIterator($this->dataGrid->getRows());
 			foreach ($iterator as $data) {
 				$row = $this->generateContentRow($data);
@@ -226,7 +226,7 @@ class Conventional extends Nette\Object implements IRenderer
 	 */
 	public function renderPaginator()
 	{
-		$paginator = $this->dataGrid->paginator;
+		$paginator = $this->dataGrid->getPaginator();
 		if ($paginator->pageCount <= 1) return '';
 
 		$container = $this->getWrapper('paginator container');
@@ -331,7 +331,7 @@ class Conventional extends Nette\Object implements IRenderer
 	public function renderInfo()
 	{
 		$container = $this->getWrapper('info container');
-		$paginator = $this->dataGrid->paginator;
+		$paginator = $this->dataGrid->getPaginator();
 		$form = $this->dataGrid->getForm(TRUE);
 
 		$stateSubmit = $form['resetSubmit']->control;
@@ -511,9 +511,6 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell->addClass('checker');
 			$row->add($cell);
 		}
-//		dump($data);
-//		dump($this->dataGrid->getColumns());
-//		dump($this->dataGrid);
 		// content
 		foreach ($this->dataGrid->getColumns() as $column) {
 			$cell = $this->getWrapper('row.content cell container');
@@ -559,7 +556,7 @@ class Conventional extends Nette\Object implements IRenderer
 	protected function generateFooterRow()
 	{
 		$form = $this->dataGrid->getForm(TRUE);
-		$paginator = $this->dataGrid->paginator;
+		$paginator = $this->dataGrid->getPaginator();
 		$row = $this->getWrapper('row.footer container');
 
 		$count = count($this->dataGrid->getColumns());
@@ -609,7 +606,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 
 	/**
-	 * @return DataGrid
+	 * @return DataGrid\DataGrid
 	 */
 	public function getDataGrid()
 	{

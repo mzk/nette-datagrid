@@ -1,6 +1,7 @@
 <?php
 
 namespace mzk\DataGrid\Filters;
+use Nette\Forms\IControl;
 
 /**
  * Defines method that must be implemented to allow a component act like a data grid column's filter.
@@ -14,7 +15,7 @@ interface IColumnFilter
 {
 	/**
 	 * Returns filter's form element.
-	 * @return Nette\Forms\FormControl
+	 * @return IControl
 	 */
 	function getFormControl();
 

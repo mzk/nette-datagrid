@@ -15,7 +15,7 @@ use Nette, mzk\DataGrid;
  */
 abstract class ColumnFilter extends Nette\ComponentModel\Component implements IColumnFilter
 {
-	/** @var Nette\Forms\FormControl  form element */
+	/** @var Nette\Forms\IControl  form element */
 	protected $element;
 
 	/** @var string  value of filter (if was filtered) */
@@ -33,7 +33,7 @@ abstract class ColumnFilter extends Nette\ComponentModel\Component implements IC
 
 	/**
 	 * Returns filter's form element.
-	 * @return Nette\Forms\FormControl
+	 * @return Nette\Forms\IControl
 	 */
 	public function getFormControl()
 	{

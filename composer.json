@@ -5,7 +5,7 @@
 	"keywords": ["nette", "VisualPaginator"],
 	"authors": [
 		{
-			"name": "romansklenar/nette-datagrid",
+			"name": "romansklenar/nette-datagrid"
 		},
 		{
 			"name": "Oldrich Salek",

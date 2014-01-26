@@ -285,7 +285,7 @@ abstract class Column extends Container implements IColumn
 	 */
 	public function addTextFilter()
 	{
-		$this->_addFilter(new Filters\TextFilter);
+		$this->_addFilter(new DataGrid\Filters\TextFilter());
 		return $this->getFilter();
 	}
 
@@ -298,7 +298,7 @@ abstract class Column extends Container implements IColumn
 	 */
 	public function addDateFilter()
 	{
-		$this->_addFilter(new Filters\DateFilter);
+		$this->_addFilter(new DataGrid\Filters\DateFilter());
 		return $this->getFilter();
 	}
 
@@ -310,7 +310,7 @@ abstract class Column extends Container implements IColumn
 	 */
 	public function addCheckboxFilter()
 	{
-		$this->_addFilter(new Filters\CheckboxFilter);
+		$this->_addFilter(new DataGrid\Filters\CheckboxFilter());
 		return $this->getFilter();
 	}
 

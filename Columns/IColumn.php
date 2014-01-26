@@ -1,6 +1,7 @@
 <?php
 
 namespace mzk\DataGrid\Columns;
+use mzk\DataGrid\Filters\IColumnFilter;
 
 /**
  * Defines method that must be implemented to allow a component act like a data grid column.
@@ -36,7 +37,7 @@ interface IColumn
 
 	/**
 	 * Returns column's filter.
-	 * @return mzk\DataGrid\Filters\IColumnFilter|NULL
+	 * @return IColumnFilter|NULL
 	 */
 	function getFilter();
 

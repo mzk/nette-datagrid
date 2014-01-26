@@ -17,13 +17,12 @@ class TextFilter extends ColumnFilter
 {
 	/**
 	 * Returns filter's form element.
-	 * @return Nette\Forms\FormControl
+	 * @return Nette\Application\UI\Control
 	 */
 	public function getFormControl()
 	{
-		if ($this->element instanceof Nette\Forms\FormControl) return $this->element;
-
-		$this->element = new Nette\Forms\TextInput($this->getName(), 5);
+		if ($this->element instanceof Nette\Application\UI\Control) return $this->element;
+		$this->element = new Nette\Forms\Controls\TextInput($this->getName(), 5);
 		return $this->element;
 	}
 }

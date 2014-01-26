@@ -2,6 +2,7 @@
 
 namespace mzk\DataGrid\Columns;
 
+use mzk\DataGrid\DataGrid;
 use Nette\Utils\Html, mzk\DataGrid\DataSources\IDataSource;
 
 /**
@@ -59,7 +60,7 @@ class PositionColumn extends NumericColumn
 			$this->destination = $destination;
 		}
 
-		$this->monitor('mzk\Datagrid');
+		$this->monitor('mzk\Datagrid\Datagrid');
 	}
 
 
@@ -71,7 +72,7 @@ class PositionColumn extends NumericColumn
 	 */
 	protected function attached($dataGrid)
 	{
-		if ($dataGrid instanceof \mzk\DataGrid) {
+		if ($dataGrid instanceof DataGrid) {
 			$dataSource = clone $dataGrid->dataSource;
 			$this->min = $this->max = 0;
 			$first = $dataSource->sort($this->getName(), IDataSource::ASCENDING)

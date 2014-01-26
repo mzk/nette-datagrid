@@ -17,7 +17,7 @@ class CheckboxFilter extends ColumnFilter
 {
 	/**
 	 * Returns filter's form element.
-	 * @return Nette\Forms\FormControl
+	 * @return Nette\Forms\IControl
 	 */
 	public function getFormControl()
 	{

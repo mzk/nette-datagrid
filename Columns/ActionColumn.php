@@ -3,6 +3,7 @@
 namespace mzk\DataGrid\Columns;
 
 use mzk\DataGrid\Action;
+use mzk\DataGrid\Filters\IColumnFilter;
 use Nette;
 
 /**
@@ -20,8 +21,8 @@ class ActionColumn extends Column implements \ArrayAccess
 
 	/**
 	 * Action column constructor.
-	 * @param  string  column's textual caption
-	 * @return void
+	 * @param string $caption column's textual caption
+	 * @return \mzk\DataGrid\Columns\ActionColumn
 	 */
 	public function __construct($caption = 'Actions')
 	{
@@ -46,7 +47,7 @@ class ActionColumn extends Column implements \ArrayAccess
 	 * Returns column's filter.
 	 * @param bool $need throw exception if component doesn't exist?
 	 * @throws \Nette\InvalidStateException
-	 * @return mzk\DataGrid\Filters\IColumnFilter|NULL
+	 * @return IColumnFilter|NULL
 	 */
 	public function getFilter($need = TRUE)
 	{
@@ -87,8 +88,8 @@ class ActionColumn extends Column implements \ArrayAccess
 	/**
 	 * Returns column's action specified by name.
 	 * @param  string action's name
-	 * @param  bool   throw exception if component doesn't exist?
-	 * @return Nette\IComponent|NULL
+	 * @param  $need bool   throw exception if component doesn't exist?
+	 * @return Nette\ComponentModel\IComponent|NULL
 	 * @todo return type
 	 */
 	public function getAction($name = NULL, $need = TRUE)
@@ -116,10 +117,10 @@ class ActionColumn extends Column implements \ArrayAccess
 
 	/**
 	 * Formats cell's content.
-	 * @param  mixed
+	 * @param $value
 	 * @param  \DibiRow|array
+	 * @throws \Nette\InvalidStateException
 	 * @return string
-	 * @throws \InvalidStateException
 	 */
 	public function formatContent($value, $data = NULL)
 	{
@@ -129,8 +130,8 @@ class ActionColumn extends Column implements \ArrayAccess
 
 	/**
 	 * Filters data source.
-	 * @param  mixed
-	 * @throws \InvalidStateException
+	 * @param $value
+	 * @throws \Nette\InvalidStateException
 	 * @return void
 	 */
 	public function applyFilter($value)
@@ -144,8 +145,9 @@ class ActionColumn extends Column implements \ArrayAccess
 
 	/**
 	 * Adds the component to the container.
-	 * @param  string  component name
-	 * @param  Nette\IComponent
+	 * @param $name Nette\ComponentModel\IComponent
+	 * @param mixed $component
+	 * @throws \InvalidArgumentException
 	 * @return void.
 	 */
 	final public function offsetSet($name, $component)
@@ -160,9 +162,8 @@ class ActionColumn extends Column implements \ArrayAccess
 
 	/**
 	 * Returns component specified by name. Throws exception if component doesn't exist.
-	 * @param  string  component name
-	 * @return Nette\IComponent
-	 * @throws \InvalidArgumentException
+	 * @param $name Nette\ComponentModel\IComponent
+	 * @return Nette\ComponentModel\IComponent
 	 */
 	final public function offsetGet($name)
 	{

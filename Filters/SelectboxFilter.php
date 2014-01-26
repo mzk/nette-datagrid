@@ -30,10 +30,10 @@ class SelectboxFilter extends ColumnFilter
 
 	/**
 	 * Selectbox filter constructor.
-	 * @param  array   items from which to choose
-	 * @param  bool    add empty first item to selectbox?
-	 * @param  bool    translate all items in selectbox?
-	 * @return void
+	 * @param array $items [] array   items from which to choose
+	 * @param bool $firstEmpty add empty first item to selectbox?
+	 * @param bool $translateItems all items in selectbox?
+	 * @return \mzk\DataGrid\Filters\SelectboxFilter
 	 */
 	public function __construct(array $items = NULL, $firstEmpty = TRUE, $translateItems = TRUE)
 	{
@@ -53,7 +53,7 @@ class SelectboxFilter extends ColumnFilter
 		// NOTE: don't generate if was items given in constructor
 		if (is_array($this->items)) return;
 
-		$dataGrid = $this->lookup('mzk\DataGrid');
+		$dataGrid = $this->lookup('mzk\DataGrid\DataGrid');
 		$items = $dataGrid->getDataSource()
 			->getFilterItems($this->getName());
 		$this->generatedItems = $this->firstEmpty ? array_merge(array('' => '?'), $items) : $items;

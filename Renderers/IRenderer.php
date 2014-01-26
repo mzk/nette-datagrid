@@ -16,7 +16,7 @@ interface IRenderer
 {
 	/**
 	 * Provides complete data grid rendering.
-	 * @param  DataGrid
+	 * @param \mzk\DataGrid\DataGrid $dataGrid
 	 * @return string
 	 */
 	function render(DataGrid\DataGrid $dataGrid);

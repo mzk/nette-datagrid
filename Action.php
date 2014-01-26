@@ -33,7 +33,7 @@ class Action extends Nette\ComponentModel\Container implements IAction
 	/** @var bool|string */
 	public $key;
 
-	/** @var Nette\Callback|Closure */
+	/** @var Nette\Callback|\Closure */
 	public $ifDisableCallback;
 
 
@@ -42,13 +42,13 @@ class Action extends Nette\ComponentModel\Container implements IAction
 	 * @note   for full ajax support, destination should not change module,
 	 * @note   presenter or action and must be ended with exclamation mark (!)
 	 *
-	 * @param  string  textual title
-	 * @param  string  textual link destination
-	 * @param  Nette\Utils\Html element which is added to a generated link
-	 * @param  bool    use ajax? (add class self::$ajaxClass into generated link)
-	 * @param  mixed   generate link with argument? (if yes you can specify name of parameter
+	 * @param $title String
+	 * @param String $destination link
+	 * @param \Nette\Utils\Html $icon
+	 * @param bool $useAjax
+	 * @param bool $key link with argument? (if yes you can specify name of parameter
 	 *                   otherwise variable mzk\DataGrid\DataGrid::$keyName will be used and must be defined)
-	 * @return void
+	 * @return \mzk\DataGrid\Action
 	 */
 	public function __construct($title, $destination, Html $icon = NULL, $useAjax = FALSE, $key = self::WITH_KEY)
 	{
@@ -71,12 +71,13 @@ class Action extends Nette\ComponentModel\Container implements IAction
 
 	/**
 	 * Generates action's link. (use before data grid is going to be rendered)
+	 * @param array $args
 	 * @return void
 	 */
 	public function generateLink(array $args = NULL)
 	{
 		$dataGrid = $this->lookup('mzk\DataGrid\DataGrid', TRUE);
-		$control = $dataGrid->lookup('Nette\Application\Control', TRUE);
+		$control = $dataGrid->lookup('Nette\Application\Ui\Control', TRUE);
 
 		switch ($this->key) {
 			case self::WITHOUT_KEY:

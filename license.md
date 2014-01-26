@@ -10,3 +10,6 @@ For more information please see http://nettephp.com
 @license    New BSD License
 @link       http://addons.nette.org/datagrid
 
+
+@author     Olda Šálek
+@copyright  Copyright (c) 2014 Olda Šálek (http://oldasalek.cz)
