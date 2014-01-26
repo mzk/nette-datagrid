@@ -8,6 +8,7 @@ use mzk\DataGrid\Columns\ImageColumn;
 use mzk\DataGrid\Columns\NumericColumn;
 use mzk\DataGrid\Columns\PositionColumn;
 use mzk\DataGrid\Columns\TextColumn;
+use mzk\DataGrid\DataSources\Dibi\DataSource;
 use mzk\DataGrid\DataSources\IDataSource;
 use mzk\DataGrid\Filters\SelectboxFilter;
 use mzk\DataGrid\Renderers\Conventional;
@@ -551,10 +552,11 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 
 	/**
 	 * Data grid form submit handler.
-	 * @param  Nette\Application\AppForm
+	 * @param \Nette\Application\UI\Form $form
+	 * @throws \Nette\InvalidStateException
 	 * @return void
 	 */
-	public function formSubmitHandler(Nette\Application\AppForm $form)
+	public function formSubmitHandler(Nette\Application\UI\Form $form)
 	{
 		$this->receivedSignal = 'submit';
 
@@ -768,6 +770,11 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 		echo mb_convert_encoding($s, 'HTML-ENTITIES', 'UTF-8');
 	}
 
+	public function bindDataTable($getDataSource)
+	{
+		$this->setDataSource(new DataSource($getDataSource));
+	}
+
 
 	/**
 	 * Template factory.
@@ -800,9 +807,9 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 			$this->receivedSignal = 'submit';
 		}
 
-		$form = new Nette\Forms\Form($name);
+		$form = new Nette\Application\UI\Form(null, $name);
 		$form->setTranslator($this->getTranslator());
-		//Nette\Forms\Controls\BaseControl::$idMask = 'frm-datagrid-' . $this->getUniqueId() . '-%s-%s';
+		Nette\Forms\Controls\BaseControl::$idMask = 'frm-datagrid-' . $this->getUniqueId() . '-%s';
 		$form->onSubmit[] = array($this, 'formSubmitHandler');
 
 		$form->addSubmit('resetSubmit', 'Reset state');
@@ -1006,7 +1013,7 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 	 * Adds column of graphical images.
 	 * @param  string  control name
 	 * @param  string  column label
-	 * @return \Columns\ImageColumn
+	 * @return ImageColumn
 	 */
 	public function addImageColumn($name, $caption = NULL)
 	{
@@ -1123,8 +1130,7 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 	 */
 	protected function getStateSession()
 	{
-		return $this->getSession()
-			->getNamespace('Nette.Extras.DataGrid/' . $this->getName() . '/states');
+		return $this->getSession()->getSection('Nette.Extras.DataGrid/' . $this->getName() . '/states');
 	}
 
 

@@ -2,6 +2,8 @@
 namespace mzk\DataGrid\DataSources\Dibi;
 
 use mzk\DataGrid\DataSources\IDataSource, mzk\DataGrid\DataSources, dibi;
+use Nette\NotImplementedException;
+use Nette\NotSupportedException;
 
 /**
  * Dibi data source based data source
@@ -48,7 +50,7 @@ class DataSource extends DataSources\DataSource
 	 */
 	public function hasColumn($name)
 	{
-		throw new \NotSupportedException;
+		throw new NotSupportedException;
 	}
 
 	/**
@@ -56,9 +58,22 @@ class DataSource extends DataSources\DataSource
 	 * @param string Column name
 	 * @return array
 	 */
-	public function getFilterItems($column)
+	public function getFilterItems($columnName)
 	{
-		throw new \NotImplementedException;
+		$dataSource = clone $this->ds;
+		$dataSource->applyLimit(NULL);
+		$fluent = $dataSource->toFluent();
+		$fluent->removeClause('select');
+		$fluent->select('');
+		$fluent->distinct($columnName);
+
+		$cond = array();
+		$cond[] = array("[$columnName] NOT LIKE %s", '');
+
+		$fluent->where('%and', $cond)->orderBy($columnName);
+		$items = $fluent->fetchPairs($columnName, $columnName);
+
+		return $items;
 	}
 
 	/**

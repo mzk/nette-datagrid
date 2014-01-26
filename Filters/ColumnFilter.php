@@ -67,8 +67,12 @@ abstract class ColumnFilter extends Nette\ComponentModel\Component implements IC
 	 */
 	public function setValue($value)
 	{
-		$this->getFormControl()
-			->setDefaultValue($value);
-		$this->value = $value;
+		try { //new Nette Version throw Exception if value not in possibles values (after filter another values missing).
+			$this->getFormControl()
+				->setValue($value);
+			$this->value = $value;
+		} catch (Nette\InvalidArgumentException $e) {
+
+		}
 	}
 }
