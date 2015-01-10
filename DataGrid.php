@@ -819,7 +819,8 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 		$form->addSubmit('operationSubmit', 'Send')->onClick = $this->onOperationSubmit;
 
 		// page input
-		$form->addText('page', 'Page', 1);
+		$form->addText('page', 'Page')
+			->setAttribute('size', 1);
 		$form['page']->setDefaultValue($this->page);
 		$form->addSubmit('pageSubmit', 'Change page');
 
