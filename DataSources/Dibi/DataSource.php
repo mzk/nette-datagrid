@@ -15,7 +15,7 @@ use Nette\NotSupportedException;
 class DataSource extends DataSources\DataSource
 {
 	/**
-	 * @var \DibiDataSource Dibi data source instance
+	 * @var \Dibi\DataSource Dibi data source instance
 	 */
 	private $ds;
 
@@ -26,10 +26,10 @@ class DataSource extends DataSources\DataSource
 
 	/**
 	 * Store given dibi data source instance
-	 * @param \DibiDataSource
+	 * @param \Dibi\DataSource
 	 * @return IDataSource
 	 */
-	public function __construct(\DibiDataSource $ds)
+	public function __construct(\Dibi\DataSource $ds)
 	{
 		$this->ds = $ds;
 	}

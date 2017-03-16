@@ -91,6 +91,9 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 	/** @var Nette\Localization\ITranslator */
 	protected $translator;
 
+	/** @var Nette\Http\Session */
+	private $session;
+
 	/**
 	 * Data grid constructor.
 	 * @return \mzk\DataGrid\DataGrid
@@ -101,7 +104,7 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 		$this->paginator = new Nette\Utils\Paginator();
 
 		$session = $this->getSession();
-		if (!$session->isStarted()) {
+		if ($session && !$session->isStarted()) {
 			$session->start();
 		}
 	}
@@ -775,6 +778,11 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 		$this->setDataSource(new DataSource($getDataSource));
 	}
 
+	public function setSession(Nette\Http\Session $session)
+	{
+		$this->session = $session;
+	}
+
 
 	/**
 	 * Template factory.
@@ -836,7 +844,7 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 			foreach ($this->getFilters() as $filter) {
 				$sub->addComponent($filter->getFormControl(), $filter->getName());
 				// NOTE: must be setted after is FormControl conntected to the form
-				$defaults[$filter->getName()] = $filter->value;
+				$defaults[$filter->getName()] = $filter->getValue();
 			}
 			$sub->setDefaults($defaults);
 		}
@@ -1140,7 +1148,8 @@ class DataGrid extends Nette\Application\UI\Control implements \ArrayAccess
 	 */
 	protected function getSession()
 	{
-		return Nette\Environment::getSession();
+		//return Nette\Environment::getSession();
+		$this->session;
 	}
 
 

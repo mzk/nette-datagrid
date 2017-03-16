@@ -152,11 +152,11 @@ class Conventional extends Nette\Object implements IRenderer
 			foreach ($errors as $error) {
 				$item = clone $li;
 				if ($error instanceof Html) {
-					$item->add($error);
+					$item->addHtml($error);
 				} else {
 					$item->setText($error);
 				}
-				$ul->add($item);
+				$ul->addHtml($item);
 			}
 			return "\n" . $ul->render(0);
 		}
@@ -173,15 +173,15 @@ class Conventional extends Nette\Object implements IRenderer
 
 		// headers
 		$header = Html::el($container->getName() == 'table' ? 'thead' : NULL);
-		$header->add($this->generateHeaderRow());
+		$header->addHtml($this->generateHeaderRow());
 
 		if ($this->dataGrid->hasFilters()) {
-			$header->add($this->generateFilterRow());
+			$header->addHtml($this->generateFilterRow());
 		}
 
 		// footer
 		$footer = Html::el($container->getName() == 'table' ? 'tfoot' : NULL);
-		$footer->add($this->generateFooterRow());
+		$footer->addHtml($this->generateFooterRow());
 
 		// body
 		$body = Html::el($container->getName() == 'table' ? 'tbody' : NULL);
@@ -191,7 +191,7 @@ class Conventional extends Nette\Object implements IRenderer
 			foreach ($iterator as $data) {
 				$row = $this->generateContentRow($data);
 				$row->addClass($iterator->isEven() ? $this->getValue('row.content .even') : NULL);
-				$body->add($row);
+				$body->addHtml($row);
 			}
 		} else {
 			$size = count($this->dataGrid->getColumns());
@@ -199,21 +199,21 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell = $this->getWrapper('row.content cell container');
 			$cell->colspan = $size;
 			$cell->style = 'text-align:center';
-			$cell->add(Html::el('div')
+			$cell->addHtml(Html::el('div')
 				->setText($this->dataGrid->translate('No data were found')));
-			$row->add($cell);
-			$body->add($row);
+			$row->addHtml($cell);
+			$body->addHtml($row);
 		}
 
 		if ($container->getName() == 'table') {
-			$container->add($header);
-			$container->add($footer);
-			$container->add($body);
+			$container->addHtml($header);
+			$container->addHtml($footer);
+			$container->addHtml($body);
 
 		} else {
-			$container->add($header);
-			$container->add($body);
-			$container->add($footer);
+			$container->addHtml($header);
+			$container->addHtml($body);
+			$container->addHtml($footer);
 		}
 
 		return $container->render(0);
@@ -240,24 +240,24 @@ class Conventional extends Nette\Object implements IRenderer
 		$title = $this->dataGrid->translate('First');
 		$link = clone $a->href($this->dataGrid->link('page', 1));
 		if ($first instanceof Html) {
-			if ($paginator->isFirst()) $first->addClass('inactive'); else $first = $link->add($first);
+			if ($paginator->isFirst()) $first->addClass('inactive'); else $first = $link->addHtml($first);
 			$first->title($title);
 		} else {
 			$first = $link->setText($title);
 		}
-		$container->add($first);
+		$container->addHtml($first);
 
 		// previous button
 		$prev = $this->getWrapper('paginator button prev');
 		$title = $this->dataGrid->translate('Previous');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->page - 1));
 		if ($prev instanceof Html) {
-			if ($paginator->isFirst()) $prev->addClass('inactive'); else $prev = $link->add($prev);
+			if ($paginator->isFirst()) $prev->addClass('inactive'); else $prev = $link->addHtml($prev);
 			$prev->title($title);
 		} else {
 			$prev = $link->setText($title);
 		}
-		$container->add($prev);
+		$container->addHtml($prev);
 
 		// page input
 		$controls = $this->getWrapper('paginator controls container');
@@ -268,38 +268,38 @@ class Conventional extends Nette\Object implements IRenderer
 			'%count%'), array($form['page']->label,
 			$form['page']->control,
 			$paginator->pageCount), $format);
-		$controls->add(Html::el()
+		$controls->addHtml(Html::el()
 			->setHtml($html));
-		$container->add($controls);
+		$container->addHtml($controls);
 
 		// next button
 		$next = $this->getWrapper('paginator button next');
 		$title = $this->dataGrid->translate('Next');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->page + 1));
 		if ($next instanceof Html) {
-			if ($paginator->isLast()) $next->addClass('inactive'); else $next = $link->add($next);
+			if ($paginator->isLast()) $next->addClass('inactive'); else $next = $link->addHtml($next);
 			$next->title($title);
 		} else {
 			$next = $link->setText($title);
 		}
-		$container->add($next);
+		$container->addHtml($next);
 
 		// to-last button
 		$last = $this->getWrapper('paginator button last');
 		$title = $this->dataGrid->translate('Last');
 		$link = clone $a->href($this->dataGrid->link('page', $paginator->pageCount));
 		if ($last instanceof Html) {
-			if ($paginator->isLast()) $last->addClass('inactive'); else $last = $link->add($last);
+			if ($paginator->isLast()) $last->addClass('inactive'); else $last = $link->addHtml($last);
 			$last->title($title);
 		} else {
 			$last = $link->setText($title);
 		}
-		$container->add($last);
+		$container->addHtml($last);
 
 		// page change submit
 		$control = $form['pageSubmit']->control;
 		$control->title = $control->value;
-		$container->add($control);
+		$container->addHtml($control);
 
 		unset($first, $prev, $next, $last, $button, $paginator, $link, $a, $form);
 		return $container->render();
@@ -316,9 +316,9 @@ class Conventional extends Nette\Object implements IRenderer
 
 		$container = $this->getWrapper('operations container');
 		$form = $this->dataGrid->getForm(TRUE);
-		$container->add($form['operations']->label);
-		$container->add($form['operations']->control);
-		$container->add($form['operationSubmit']->control->title($form['operationSubmit']->control->value));
+		$container->addHtml($form['operations']->label);
+		$container->addHtml($form['operations']->control);
+		$container->addHtml($form['operationSubmit']->control->title($form['operationSubmit']->control->value));
 
 		return $container->render();
 	}
@@ -369,12 +369,12 @@ class Conventional extends Nette\Object implements IRenderer
 			if ($this->dataGrid->hasFilters()) {
 				$cell->rowspan(2);
 			}
-			$row->add($cell);
+			$row->addHtml($cell);
 		}
 
 		// headers
 		foreach ($this->dataGrid->getColumns() as $column) {
-			$value = $text = $column->caption;
+			$value = $text = $column->getCaption();
 
 			if ($column->isOrderable()) {
 				$i = 1;
@@ -399,16 +399,16 @@ class Conventional extends Nette\Object implements IRenderer
 					->addClass(Columns\Column::$ajaxClass);
 				$up->addClass($a ? 'active' : '')
 					->href($column->getOrderLink('a'))
-					->add(Html::el('span')
+					->addHtml(Html::el('span')
 						->class('up'));
 				$down->addClass($d ? 'active' : '')
 					->href($column->getOrderLink('d'))
-					->add(Html::el('span')
+					->addHtml(Html::el('span')
 						->class('down'));
 				$positioner = Html::el('span')
 					->class('positioner')
-					->add($up)
-					->add($down);
+					->addHtml($up)
+					->addHtml($down);
 				$active = $a || $d;
 
 				$value = (string)Html::el('a')
@@ -426,7 +426,7 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell->addClass(isset($active) && $active == TRUE ? $this->getValue('row.header cell .active') : NULL);
 			if ($column instanceof Columns\ActionColumn) $cell->addClass('actions');
 
-			$row->add($cell);
+			$row->addHtml($cell);
 		}
 
 		return $row;
@@ -473,12 +473,12 @@ class Conventional extends Nette\Object implements IRenderer
 			}
 
 			$cell->setHtml($value);
-			$row->add($cell);
+			$row->addHtml($cell);
 		}
 
 		if (!$this->dataGrid->hasActions()) {
 			$submitControl->addStyle('display: none');
-			$row->add($submitControl);
+			$row->addHtml($submitControl);
 		}
 
 		return $row;
@@ -509,7 +509,7 @@ class Conventional extends Nette\Object implements IRenderer
 			$cell = $this->getWrapper('row.content cell container')
 				->setHtml((string)$value);
 			$cell->addClass('checker');
-			$row->add($cell);
+			$row->addHtml($cell);
 		}
 		// content
 		foreach ($this->dataGrid->getColumns() as $column) {
@@ -541,7 +541,7 @@ class Conventional extends Nette\Object implements IRenderer
 
 			$cell->setHtml((string)$value);
 			$this->onCellRender($cell, $column->getName(), !($column instanceof Columns\ActionColumn) ? $data[$column->getName()] : $data);
-			$row->add($cell);
+			$row->addHtml($cell);
 		}
 		unset($form, $primary, $cell, $value, $action);
 		$this->onRowRender($row, $data);
@@ -572,7 +572,7 @@ class Conventional extends Nette\Object implements IRenderer
 			$this->renderPaginator(),
 			$this->renderInfo(),), $this->footerFormat);
 		$cell->setHtml($html);
-		$row->add($cell);
+		$row->addHtml($cell);
 
 		return $row;
 	}

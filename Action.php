@@ -61,7 +61,7 @@ class Action extends Nette\ComponentModel\Container implements IAction
 		if ($useAjax) $a->addClass(self::$ajaxClass);
 
 		if ($icon !== NULL && $icon instanceof Nette\Utils\Html) {
-			$a->add($icon);
+			$a->addHtml($icon);
 		} else {
 			$a->setText($title);
 		}

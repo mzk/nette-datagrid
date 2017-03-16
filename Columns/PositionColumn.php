@@ -105,12 +105,12 @@ class PositionColumn extends NumericColumn
 		$up = Html::el('a')
 			->title($this->moves['up'])
 			->href($uplink)
-			->add(Html::el('span')
+			->addHtml(Html::el('span')
 			->class('up'));
 		$down = Html::el('a')
 			->title($this->moves['down'])
 			->href($downlink)
-			->add(Html::el('span')
+			->addHtml(Html::el('span')
 			->class('down'));
 
 		if ($this->useAjax) {
@@ -130,8 +130,8 @@ class PositionColumn extends NumericColumn
 
 		$positioner = Html::el('span')
 			->class('positioner')
-			->add($up)
-			->add($down);
+			->addHtml($up)
+			->addHtml($down);
 		return $positioner . $value;
 	}
 }
